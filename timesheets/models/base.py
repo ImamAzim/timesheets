@@ -11,8 +11,9 @@ def main():
 
 def test():
     timesheet = TimeSheet(0.8)
-    timesheet.create_new(2023, [])
-    timesheet.save('test')
+    timesheet.load('test', 2023)
+    # timesheet.create_new(2023, [])
+    # timesheet.save('test')
 
 
 APP_NAME = 'timesheets'
@@ -30,6 +31,7 @@ class TimeSheet(object):
         """
         self._employement_rate = employement_rate
         self._df = None
+        self._year = None
         directory = os.path.join(xdg.xdg_data_home(), APP_NAME)
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -48,18 +50,22 @@ class TimeSheet(object):
 
     def save(self, name):
         """save dataframe in the path define in attributes
-        :path: to filename
+        :name: name of the user for filename
 
         """
-        if self._df is not None:
-            pass
+        if self._df is not None and self._year is not None:
+            filename = f'{name}_{self._year}'
+            path = os.path.join(self._directory, filename)
+            self._df.to_csv(path)
 
-    def load(self, name):
+    def load(self, name, year):
         """load df from path
-        :path: str to filename
 
         """
-        pass
+        filename = f'{name}_{year}'
+        path = os.path.join(self._directory, filename)
+        self._df = pandas.read_csv(path)
+        self._year = year
 
     def check_balance(self, date):
         balance = 0
