@@ -1,5 +1,22 @@
+import os
+
+
+import pandas
+import xdg
+
+
 def main():
-    pass
+    test()
+
+
+def test():
+    timesheet = TimeSheet(0.8)
+    timesheet.create_new(2023, [])
+    timesheet.save('test')
+
+
+APP_NAME = 'timesheets'
+
 
 class TimeSheet(object):
 
@@ -13,7 +30,10 @@ class TimeSheet(object):
         """
         self._employement_rate = employement_rate
         self._df = None
-        self.path = None
+        directory = os.path.join(xdg.xdg_data_home(), APP_NAME)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        self._directory = directory
 
     def create_new(self, year, holidays):
         """create a new dataframe
@@ -22,17 +42,21 @@ class TimeSheet(object):
         :holidays: list of date
 
         """
-        df = None
+        self._year = year
+        df = pandas.DataFrame()
         self._df = df
 
-    def save(self):
+    def save(self, name):
         """save dataframe in the path define in attributes
+        :path: to filename
 
         """
-        pass
+        if self._df is not None:
+            pass
 
-    def load(self):
+    def load(self, name):
         """load df from path
+        :path: str to filename
 
         """
         pass
