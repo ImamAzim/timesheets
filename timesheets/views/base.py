@@ -146,6 +146,7 @@ class TimeSheetView(AppView):
 
         self._timesheet = TimeSheet(employement_rate)
         self.timesheet_folder = self._timesheet.directory
+        self.load()
 
     @property
     def timesheet_folder(self):
@@ -172,7 +173,6 @@ class TimeSheetView(AppView):
         df = self._timesheet.df
         window = tkinter.Toplevel()
         table = pandastable.Table(window, dataframe=df)
-        table.copyIndex()
         table.show()
 
     def _change_path(self):
