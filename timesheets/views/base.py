@@ -107,7 +107,7 @@ class TimeSheetView(AppView):
 
 
     def __init__(self, root, main_menu, name='timesheet'):
-        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employement_rate=1)
+        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employement_rate=1, path='')
 
 
         frames = dict()
@@ -123,6 +123,7 @@ class TimeSheetView(AppView):
             if name in entry_names:
                 labels[name] = ttk.Label(parent, text=name)
                 entries[name] = ttk.Entry(parent, textvariable=var)
+        buttons['path'] = ttk.Button(parent, textvariable=self._app_parameters_var['path'], command=self._change_path, width=30)
         buttons['new'] = ttk.Button(parent, text='new', command=self.create_new)
         buttons['save'] = ttk.Button(parent, text='save', command=self.save)
         buttons['load'] = ttk.Button(parent, text='load', command=self.load)
@@ -144,7 +145,16 @@ class TimeSheetView(AppView):
         employement_rate = float(self._app_parameters_var['employement_rate'].get())
 
         self._timesheet = TimeSheet(employement_rate)
+        self.timesheet_folder = self._timesheet.directory
 
+    @property
+    def timesheet_folder(self):
+        return self._app_parameters_var['path'].get()
+
+    @timesheet_folder.setter
+    def timesheet_folder(self, new_path):
+        self._app_parameters_var['path'].set(new_path)
+        
     def create_new(self):
         year = int(self._app_parameters_var['year'].get())
         self._timesheet.create_new(year, [])
@@ -160,11 +170,16 @@ class TimeSheetView(AppView):
 
     def show(self):
         df = self._timesheet.df
-        print(df)
         window = tkinter.Toplevel()
         table = pandastable.Table(window, dataframe=df)
         table.copyIndex()
         table.show()
+
+    def _change_path(self):
+        path = filedialog.askdirectory(title='timesheet folder', initialdir=self._timesheet.directory)
+        if path:
+            self.timesheet_folder = path
+            self._timesheet.directory = path
 
 
 def manual_test():
