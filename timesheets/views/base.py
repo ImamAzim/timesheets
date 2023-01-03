@@ -159,8 +159,11 @@ class TimeSheetView(AppView):
         self._timesheet.load(name, year)
 
     def show(self):
+        df = self._timesheet.df
+        print(df)
         window = tkinter.Toplevel()
-        table = pandastable.Table(window, dataframe=self._timesheet.df)
+        table = pandastable.Table(window, dataframe=df)
+        table.copyIndex()
         table.show()
 
 

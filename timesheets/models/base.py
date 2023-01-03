@@ -1,5 +1,6 @@
 import os
 import json
+import datetime
 
 
 import pandas
@@ -55,7 +56,8 @@ class TimeSheet(object):
 
         """
         self._year = year
-        df = pandas.DataFrame()
+        columns = ['month', 'day', 'weekday', 'morning start', 'morning end', 'afternoon start', 'afternoon end', 'workday']
+        df = pandas.DataFrame(columns=columns)
         self._df = df
 
     def save(self, name):
