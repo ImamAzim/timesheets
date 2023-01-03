@@ -48,6 +48,10 @@ class TimeSheet(object):
     def df(self):
         return self._df
 
+    @df.setter
+    def df(self, new_df):
+        self._df = new_df
+
     def __repr__(self):
         text = self._df.to_string()
         return text
@@ -60,7 +64,7 @@ class TimeSheet(object):
 
         """
         self._year = year
-        data = dict(month=[], day=[], weekday=[], morning_start=[], morning_end=[], afternoon_start=[], afternoon_end=[],workday=[])
+        data = dict(month=[], day=[], weekday=[], AM_start=[], AM_end=[], PM_start=[], PM_end=[],workday=[])
 
         for month in range(1, 13):
             for date in date_iter(year, month):
@@ -68,10 +72,10 @@ class TimeSheet(object):
                 data['day'].append(date.day)
                 data['weekday'].append(calendar.day_name[date.weekday()])
                 time = datetime.time().isoformat(timespec='minutes')
-                data['morning_start'].append(time)
-                data['morning_end'].append(time)
-                data['afternoon_start'].append(time)
-                data['afternoon_end'].append(time)
+                data['AM_start'].append(time)
+                data['AM_end'].append(time)
+                data['PM_start'].append(time)
+                data['PM_end'].append(time)
                 if date.weekday() > 4:
                     workday = False
                 else:

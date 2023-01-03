@@ -115,6 +115,8 @@ class TimeSheetView(AppView):
         entries = dict()
         labels = dict()
 
+        self.table = None
+
         entry_names = ('user_name', 'year', 'employement_rate')
 
         frames['frame 1'] = ttk.LabelFrame(self)
@@ -147,6 +149,7 @@ class TimeSheetView(AppView):
         self._timesheet = TimeSheet(employement_rate)
         self.timesheet_folder = self._timesheet.directory
         self.load()
+        self.show()
 
     @property
     def timesheet_folder(self):
@@ -155,7 +158,7 @@ class TimeSheetView(AppView):
     @timesheet_folder.setter
     def timesheet_folder(self, new_path):
         self._app_parameters_var['path'].set(new_path)
-        
+
     def create_new(self):
         year = int(self._app_parameters_var['year'].get())
         self._timesheet.create_new(year, [])
@@ -174,6 +177,11 @@ class TimeSheetView(AppView):
         window = tkinter.Toplevel()
         table = pandastable.Table(window, dataframe=df)
         table.show()
+        table.autoResizeColumns()
+        x = sum(list(table.columnwidths.values())) + 100
+        y = 250
+        window.geometry(f'{x}x{y}')
+        self.table = table
 
     def _change_path(self):
         path = filedialog.askdirectory(title='timesheet folder', initialdir=self._timesheet.directory)
