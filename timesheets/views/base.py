@@ -107,7 +107,7 @@ class TimeSheetView(AppView):
 
 
     def __init__(self, root, main_menu, name='timesheet'):
-        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employment_rate=1)
+        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employement_rate=1)
 
 
         frames = dict()
@@ -130,8 +130,6 @@ class TimeSheetView(AppView):
 
         for name, frame in frames.items():
             frame.pack(fill=tkinter.BOTH, expand=True)
-        for button in buttons.values():
-            button.pack(fill=tkinter.BOTH, expand=True)
         row = 0
         for name, var in self._app_parameters_var.items():
             if name in entry_names:
@@ -143,13 +141,27 @@ class TimeSheetView(AppView):
             row += 1
 
         self.print('welcome to the timesheets app\n')
+        employement_rate = float(self._app_parameters_var['employement_rate'].get())
 
-        self._timesheet = TimeSheet(self._app_parameters_var['employement_rate'].get())
+        self._timesheet = TimeSheet(employement_rate)
 
     def create_new(self):
         year = int(self._app_parameters_var['year'].get())
         self._timesheet.create_new(year, [])
-        
+
+    def save(self):
+        name = self._app_parameters_var['user_name'].get()
+        self._timesheet.save(name)
+
+    def load(self):
+        name = self._app_parameters_var['user_name'].get()
+        year = int(self._app_parameters_var['year'].get())
+        self._timesheet.load(name, year)
+
+    def show(self):
+        window = tkinter.Toplevel()
+        table = pandastable.Table(window, dataframe=self._timesheet.df)
+        table.show()
 
 
 def manual_test():

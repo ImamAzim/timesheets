@@ -1,4 +1,5 @@
 import os
+import json
 
 
 import pandas
@@ -37,6 +38,10 @@ class TimeSheet(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
         self._directory = directory
+
+    @property
+    def df(self):
+        return self._df
 
     def __repr__(self):
         text = self._df.to_string()
