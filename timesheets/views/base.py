@@ -9,7 +9,7 @@ from functools import partial
 
 
 import pandastable
-from timesheets.models.base import Parameters
+from timesheets.models.base import Parameters, TimeSheet
 
 
 def main():
@@ -43,14 +43,6 @@ class AppView(ttk.LabelFrame):
 
     def _trace_when_var_is_updated(self, var, index, mode, key):
         setattr(self._app_parameters, key, self._app_parameters_var[key].get())
-
-    @property
-    def controller(self):
-        return self._controller
-
-    @controller.setter
-    def controller(self, controller):
-        self._controller = controller
 
     def print(self, text):
         text = f'{self._name}:\n{text}'
@@ -115,36 +107,55 @@ class TimeSheetView(AppView):
 
 
     def __init__(self, root, main_menu, name='timesheet'):
-        super().__init__(root, main_menu, name)
+        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employment_rate=1)
+
 
         frames = dict()
         buttons = dict()
+        entries = dict()
+        labels = dict()
+
+        entry_names = ('user_name', 'year', 'employement_rate')
 
         frames['frame 1'] = ttk.LabelFrame(self)
         parent = frames['frame 1']
-        buttons['button 1'] = ttk.Button(parent, text='test', command=self.test)
+        for name, var in self._app_parameters_var.items():
+            if name in entry_names:
+                labels[name] = ttk.Label(parent, text=name)
+                entries[name] = ttk.Entry(parent, textvariable=var)
+        buttons['new'] = ttk.Button(parent, text='new', command=self.create_new)
+        buttons['save'] = ttk.Button(parent, text='save', command=self.save)
+        buttons['load'] = ttk.Button(parent, text='load', command=self.load)
+        buttons['show'] = ttk.Button(parent, text='show', command=self.show)
 
         for name, frame in frames.items():
-            frame['text'] = name
             frame.pack(fill=tkinter.BOTH, expand=True)
         for button in buttons.values():
             button.pack(fill=tkinter.BOTH, expand=True)
+        row = 0
+        for name, var in self._app_parameters_var.items():
+            if name in entry_names:
+                labels[name].grid(column=0, row=row)
+                entries[name].grid(column=1, row=row)
+                row += 1
+        for button in buttons.values():
+            button.grid(column=0, row=row, columnspan=2, sticky='ew')
+            row += 1
 
         self.print('welcome to the timesheets app\n')
 
-    def test(self):
-        self.print('test')
+        self._timesheet = TimeSheet(self._app_parameters_var['employement_rate'].get())
+
+    def create_new(self):
+        year = int(self._app_parameters_var['year'].get())
+        self._timesheet.create_new(year, [])
+        
 
 
 def manual_test():
     root = tkinter.Tk()
     main_menu = MainMenu(root, debug=True)
     app_view = TimeSheetView(root, main_menu)
-    from timesheets.models.base import TimeSheet
-    from timesheets.controllers.base import TimeSheetController
-    timesheet = TimeSheet()
-    app_controller = TimeSheetController(app_view, timesheet)
-    app_view.controller = app_controller
     main_menu.grid(row=0, column=0)
     app_view.grid(row=0, column=1)
     root.mainloop()
