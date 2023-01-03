@@ -42,7 +42,7 @@ class TimeSheet(object):
         directory = os.path.join(xdg.xdg_data_home(), APP_NAME)
         if not os.path.exists(directory):
             os.makedirs(directory)
-        self._directory = directory
+        self.directory = directory
 
     @property
     def df(self):
@@ -89,7 +89,7 @@ class TimeSheet(object):
         """
         if self._df is not None and self._year is not None:
             filename = f'{name}_{self._year}'
-            path = os.path.join(self._directory, filename)
+            path = os.path.join(self.directory, filename)
             self._df.to_csv(path)
 
     def load(self, name, year):
@@ -97,7 +97,7 @@ class TimeSheet(object):
 
         """
         filename = f'{name}_{year}'
-        path = os.path.join(self._directory, filename)
+        path = os.path.join(self.directory, filename)
         self._df = pandas.read_csv(path)
         self._year = year
 
