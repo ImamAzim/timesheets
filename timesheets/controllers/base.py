@@ -2,16 +2,15 @@ def main():
     pass
 
 
-class ExampleController(object):
+class TimeSheetController(object):
 
-    """example
-    """
 
-    def __init__(self, view):
+    def __init__(self, view, timesheet):
         """
         """
 
         self._view = view
+        self._timesheet = timesheet
 
 
 if __name__ == '__main__':
