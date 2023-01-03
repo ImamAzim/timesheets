@@ -12,6 +12,7 @@ def main():
 def test():
     timesheet = TimeSheet(0.8)
     timesheet.load('test', 2023)
+    print(timesheet)
     # timesheet.create_new(2023, [])
     # timesheet.save('test')
 
@@ -36,6 +37,10 @@ class TimeSheet(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
         self._directory = directory
+
+    def __repr__(self):
+        text = self._df.to_string()
+        return text
 
     def create_new(self, year, holidays):
         """create a new dataframe
