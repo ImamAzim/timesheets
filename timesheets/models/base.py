@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+import calendar
 
 
 import pandas
@@ -12,15 +13,18 @@ def main():
 
 
 def test():
-    timesheet = TimeSheet(0.8)
-    timesheet.load('test', 2023)
-    print(timesheet)
-    # timesheet.create_new(2023, [])
+    timesheet = TimeSheet()
+    # timesheet.load('test', 2023)
+    timesheet.create_new(2023, [])
     # timesheet.save('test')
+    print(timesheet)
 
 
 APP_NAME = 'timesheets'
 
+def date_iter(year, month):
+    for i in range(1, calendar.monthrange(year, month)[1] + 1):
+        yield datetime.date(year, month, i)
 
 class TimeSheet(object):
 
@@ -56,8 +60,26 @@ class TimeSheet(object):
 
         """
         self._year = year
-        columns = ['month', 'day', 'weekday', 'morning start', 'morning end', 'afternoon start', 'afternoon end', 'workday']
-        df = pandas.DataFrame(columns=columns)
+        data = dict(month=[], day=[], weekday=[], morning_start=[], morning_end=[], afternoon_start=[], afternoon_end=[],workday=[])
+
+        for month in range(1, 13):
+            for date in date_iter(year, month):
+                data['month'].append(calendar.month_name[month])
+                data['day'].append(date.day)
+                data['weekday'].append(calendar.day_name[date.weekday()])
+                time = datetime.time().isoformat(timespec='minutes')
+                data['morning_start'].append(time)
+                data['morning_end'].append(time)
+                data['afternoon_start'].append(time)
+                data['afternoon_end'].append(time)
+                if date.weekday() > 4:
+                    workday = False
+                else:
+                    workday = True
+                data['workday'].append(workday)
+
+        df = pandas.DataFrame(data)
+
         self._df = df
 
     def save(self, name):
