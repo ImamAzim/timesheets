@@ -147,7 +147,7 @@ class TimeSheetView(AppView):
         self.print('welcome to the timesheets app\n')
 
         self._timesheet = TimeSheet()
-        self.timesheet_folder = self._timesheet.directory
+        self._timesheet.directory = self.timesheet_folder
         self.load()
         self.show()
 
