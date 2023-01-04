@@ -130,6 +130,7 @@ class TimeSheetView(AppView):
         buttons['save'] = ttk.Button(parent, text='save', command=self.save)
         buttons['load'] = ttk.Button(parent, text='load', command=self.load)
         buttons['show'] = ttk.Button(parent, text='show', command=self.show)
+        buttons['check balance'] = ttk.Button(parent, text='check balance', command=self.check_balance)
 
         for name, frame in frames.items():
             frame.pack(fill=tkinter.BOTH, expand=True)
@@ -144,9 +145,8 @@ class TimeSheetView(AppView):
             row += 1
 
         self.print('welcome to the timesheets app\n')
-        employement_rate = float(self._app_parameters_var['employement_rate'].get())
 
-        self._timesheet = TimeSheet(employement_rate)
+        self._timesheet = TimeSheet()
         self.timesheet_folder = self._timesheet.directory
         self.load()
         self.show()
@@ -182,6 +182,12 @@ class TimeSheetView(AppView):
         y = 250
         window.geometry(f'{x}x{y}')
         self.table = table
+
+    def check_balance(self):
+        employement_rate = float(self._app_parameters_var['employement_rate'].get())
+        date = datetime.date.today()
+        balance = self._timesheet.check_balance(date, employement_rate)
+        self.print(balance)
 
     def _change_path(self):
         path = filedialog.askdirectory(title='timesheet folder', initialdir=self._timesheet.directory)

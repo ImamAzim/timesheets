@@ -30,13 +30,11 @@ class TimeSheet(object):
 
     """Docstring for TimeSheet. """
 
-    def __init__(self, employement_rate=1):
+    def __init__(self):
         """TODO: to be defined.
 
-        :employement_rate: float
 
         """
-        self._employement_rate = employement_rate
         self._df = None
         self._year = None
         directory = os.path.join(xdg.xdg_data_home(), APP_NAME)
@@ -105,9 +103,10 @@ class TimeSheet(object):
         self._df = pandas.read_csv(path)
         self._year = year
 
-    def check_balance(self, date):
+    def check_balance(self, date, employement_rate):
         balance = 0
         return balance
+
 
 
 class Parameters(object):
