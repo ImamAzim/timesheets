@@ -104,12 +104,14 @@ class TimeSheet(object):
         self._df = pandas.read_csv(path)
         self._year = year
 
-    def check_balance(self, date, employment_rate):
-        balance = 0
-        # worktime = self._get_day_required_worktime(row, employment_rate)
-        row = 1
-        worktime = self._get_day_worktime(row)
-        print(worktime)
+    def check_balance(self, date, employment_rate, last_year_balance=datetime.timedelta(0)):
+        balance = last_year_balance
+        row_max = date.timetuple().tm_yday - 1
+        for row in range(row_max):
+            worktime = self._get_day_worktime(row)
+            required_worktime = self._get_day_required_worktime(row, employment_rate)
+            day_balance = worktime - required_worktime 
+            balance += day_balance
         return balance
 
     def get_today_worktime(self):
@@ -155,7 +157,7 @@ class TimeSheet(object):
         if is_workday:
             required_worktime = self.FULL_DAY_WORKTIME * employment_rate
         else:
-            required_worktime = 0
+            required_worktime = datetime.timedelta(0)
         return required_worktime
 
 
