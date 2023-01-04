@@ -190,6 +190,8 @@ class TimeSheetView(AppView):
         table.redraw()
         row = self._timesheet.get_today_row()
         table.movetoSelection(row=row)
+        table.setRowColors(rows=[6], clr='gray', cols='all')
+        table.redraw()
         table.autoResizeColumns()
         x = max(743, sum(list(table.columnwidths.values())) + 100)
         y= 700

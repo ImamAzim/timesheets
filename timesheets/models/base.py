@@ -6,6 +6,7 @@ import calendar
 
 import pandas
 import xdg
+import numpy
 
 
 def main():
@@ -17,7 +18,8 @@ def test():
     # timesheet.load('test', 2023)
     timesheet.create_new(2023, [])
     # timesheet.save('test')
-    print(timesheet)
+    l = timesheet.get_holiday_rows()
+    print(l)
 
 
 APP_NAME = 'timesheets'
@@ -110,6 +112,13 @@ class TimeSheet(object):
     def get_today_row(self):
         row = datetime.date.today().timetuple().tm_yday - 1
         return row
+
+    def get_holiday_rows(self):
+        workday_array = self.df.workday.values
+        holliday_array = 1 - workday_array
+        rows = numpy.argwhere(holliday_array)
+        return rows
+
 
     def check_balance(self, date, employment_rate, last_year_balance=datetime.timedelta(0)):
         balance = last_year_balance
