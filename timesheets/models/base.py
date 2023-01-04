@@ -101,7 +101,10 @@ class TimeSheet(object):
         """
         filename = f'{name}_{year}'
         path = os.path.join(self.directory, filename)
-        self._df = pandas.read_csv(path)
+        try:
+            self._df = pandas.read_csv(path)
+        except FileNotFoundError:
+            print('no file found')
         self._year = year
 
     def check_balance(self, date, employment_rate, last_year_balance=datetime.timedelta(0)):

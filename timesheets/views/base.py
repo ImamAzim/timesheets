@@ -184,7 +184,7 @@ class TimeSheetView(AppView):
         table = pandastable.Table(window, dataframe=df)
         table.show()
         table.autoResizeColumns()
-        x = sum(list(table.columnwidths.values())) + 100
+        x = max(743, sum(list(table.columnwidths.values())) + 100)
         y= 700
         self._root.geometry(f'{x}x{y}')
         self.table = table
