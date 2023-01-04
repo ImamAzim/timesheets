@@ -107,7 +107,7 @@ class TimeSheetView(AppView):
 
 
     def __init__(self, root, main_menu, pandaframe, name='timesheet'):
-        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employment_rate=1, path='')
+        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employment_rate=1, path='', last_year_balance='00:00')
 
         self._root = root
 
@@ -119,7 +119,7 @@ class TimeSheetView(AppView):
 
         self.table = None
 
-        entry_names = ('user_name', 'year', 'employment_rate')
+        entry_names = ('user_name', 'year', 'employment_rate', 'last_year_balance')
 
         frames['frame 1'] = ttk.LabelFrame(self)
         parent = frames['frame 1']
@@ -192,7 +192,18 @@ class TimeSheetView(AppView):
     def check_balance(self):
         employment_rate = float(self._app_parameters_var['employment_rate'].get())
         date = datetime.date.today()
-        balance = self._timesheet.check_balance(date, employment_rate)
+        last_year_balance_str = self._app_parameters_var['last_year_balance'].get()
+        if last_year_balance_str[0] == '-':
+            last_year_balance_str = last_year_balance_str[1:]
+            negative_balance = True
+        else:
+            negative_balance = False
+        last_year_datetime = datetime.datetime.combine(datetime.date.min, datetime.time.fromisoformat(last_year_balance_str))
+        ref = datetime.datetime.min
+        last_year_balance = last_year_datetime - ref
+        if negative_balance:
+            last_year_balance = - last_year_balance
+        balance = self._timesheet.check_balance(date, employment_rate, last_year_balance)
         self.print(balance)
 
     def show_today_balance(self):
