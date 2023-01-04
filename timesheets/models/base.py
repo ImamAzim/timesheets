@@ -107,6 +107,10 @@ class TimeSheet(object):
             print('no file found')
         self._year = year
 
+    def get_today_row(self):
+        row = datetime.date.today().timetuple().tm_yday - 1
+        return row
+
     def check_balance(self, date, employment_rate, last_year_balance=datetime.timedelta(0)):
         balance = last_year_balance
         row_max = date.timetuple().tm_yday - 1

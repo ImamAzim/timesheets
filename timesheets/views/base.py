@@ -187,6 +187,9 @@ class TimeSheetView(AppView):
         window = self._pandasframe
         table = pandastable.Table(window, dataframe=df)
         table.show()
+        table.redraw()
+        row = self._timesheet.get_today_row()
+        table.movetoSelection(row=row)
         table.autoResizeColumns()
         x = max(743, sum(list(table.columnwidths.values())) + 100)
         y= 700
