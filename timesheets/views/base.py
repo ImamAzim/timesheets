@@ -174,6 +174,7 @@ class TimeSheetView(AppView):
     def save(self):
         name = self._app_parameters_var['user_name'].get()
         self._timesheet.save(name)
+        self.check_balance()
 
     def load(self):
         name = self._app_parameters_var['user_name'].get()
@@ -218,7 +219,6 @@ class TimeSheetView(AppView):
             color = 'green'
         self._balance_display['text'] = text
         self._balance_display['background'] = color
-        
 
     def show_today_balance(self):
         employment_rate = float(self._app_parameters_var['employment_rate'].get())
