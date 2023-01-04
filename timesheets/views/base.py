@@ -132,6 +132,7 @@ class TimeSheetView(AppView):
         buttons['show'] = ttk.Button(parent, text='show', command=self.show)
         buttons['check balance'] = ttk.Button(parent, text='check balance', command=self.check_balance)
         buttons['today balance'] = ttk.Button(parent, text='today balance', command=self.show_today_balance)
+        frames['table'] = ttk.LabelFrame(self)
 
         for name, frame in frames.items():
             frame.pack(fill=tkinter.BOTH, expand=True)
@@ -145,12 +146,15 @@ class TimeSheetView(AppView):
             button.grid(column=0, row=row, columnspan=2, sticky='ew')
             row += 1
 
+        self._pandasframe = frames['table']
+
         self.print('welcome to the timesheets app\n')
 
         self._timesheet = TimeSheet()
         self._timesheet.directory = self.timesheet_folder
         self.load()
         self.show()
+
 
     @property
     def timesheet_folder(self):
@@ -175,13 +179,14 @@ class TimeSheetView(AppView):
 
     def show(self):
         df = self._timesheet.df
-        window = tkinter.Toplevel()
+        # window = tkinter.Toplevel()
+        window = self._pandasframe
         table = pandastable.Table(window, dataframe=df)
         table.show()
         table.autoResizeColumns()
         x = sum(list(table.columnwidths.values())) + 100
         y = 250
-        window.geometry(f'{x}x{y}')
+        # window.geometry(f'{x}x{y}')
         self.table = table
 
     def check_balance(self):
