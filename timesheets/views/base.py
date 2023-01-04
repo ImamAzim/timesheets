@@ -190,14 +190,14 @@ class TimeSheetView(AppView):
         balance = self._timesheet.check_balance(date, employment_rate)
         self.print(balance)
 
-    def show_today_worktime(self):
-        worktime = self._timesheet.get_today_worktime()
-        self.print(worktime)
-
     def show_today_balance(self):
         employment_rate = float(self._app_parameters_var['employment_rate'].get())
         balance = self._timesheet.get_today_balance(employment_rate)
-        self.print(balance)
+        if balance < datetime.timedelta(0):
+            text = '-' + str(-balance)
+        else:
+            text = str(balance)
+        self.print(text)
 
     def _change_path(self):
         path = filedialog.askdirectory(title='timesheet folder', initialdir=self._timesheet.directory)
