@@ -113,9 +113,31 @@ class TimeSheet(object):
         return balance
 
     def get_today_worktime(self):
+        now = datetime.datetime.now()
+        day = datetime.date.today()
         row = datetime.date.today().timetuple().tm_yday - 1
-        worktime = self._get_day_worktime(row)
-        return worktime
+
+        start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_start']))
+        end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_end']))
+        if start_time < now:
+            if end_time > now or end_time < start_time:
+                end_time = now
+            morning_worktime = end_time - start_time
+        else:
+            morning_worktime = 0
+
+        start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_start']))
+        end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_end']))
+        if start_time < now:
+            if end_time > now or end_time < start_time:
+                end_time = now
+            afternoon_worktime = end_time - start_time
+        else:
+            afternoon_worktime = 0
+
+        day_worktime = morning_worktime + afternoon_worktime
+
+        return day_worktime
 
     def _get_day_worktime(self, row):
         day = datetime.date.min # every day has the same hours, so it does not matter what day we take
