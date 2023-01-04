@@ -134,7 +134,7 @@ class TimeSheetView(AppView):
         buttons['show'] = ttk.Button(parent, text='show', command=self.show)
         buttons['check balance'] = ttk.Button(parent, text='check balance', command=self.check_balance)
         buttons['today balance'] = ttk.Button(parent, text='today balance', command=self.show_today_balance)
-        self._balance_display = ttk.Label(parent)
+        self._balance_display = ttk.Label(parent, anchor=tkinter.CENTER, foreground='white')
 
         for name, frame in frames.items():
             frame.pack(fill=tkinter.BOTH, expand=True)
