@@ -106,8 +106,10 @@ class RedirectText:
 class TimeSheetView(AppView):
 
 
-    def __init__(self, root, main_menu, name='timesheet'):
+    def __init__(self, root, main_menu, pandaframe, name='timesheet'):
         super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employment_rate=1, path='')
+
+        self._root = root
 
 
         frames = dict()
@@ -146,15 +148,13 @@ class TimeSheetView(AppView):
             button.grid(column=0, row=row, columnspan=2, sticky='ew')
             row += 1
 
-        self._pandasframe = frames['table']
+        # self._pandasframe = frames['table']
+        self._pandasframe = pandaframe
 
         self.print('welcome to the timesheets app\n')
 
         self._timesheet = TimeSheet()
         self._timesheet.directory = self.timesheet_folder
-        self.load()
-        self.show()
-
 
     @property
     def timesheet_folder(self):
@@ -185,8 +185,8 @@ class TimeSheetView(AppView):
         table.show()
         table.autoResizeColumns()
         x = sum(list(table.columnwidths.values())) + 100
-        y = 250
-        # window.geometry(f'{x}x{y}')
+        y= 700
+        self._root.geometry(f'{x}x{y}')
         self.table = table
 
     def check_balance(self):
@@ -213,10 +213,14 @@ class TimeSheetView(AppView):
 
 def manual_test():
     root = tkinter.Tk()
+    pandaframe = ttk.Frame(root)
     main_menu = MainMenu(root, debug=True)
-    app_view = TimeSheetView(root, main_menu)
-    main_menu.grid(row=0, column=0)
-    app_view.grid(row=0, column=1)
+    app_view = TimeSheetView(root, main_menu, pandaframe)
+    pandaframe.pack(expand=True, fill=tkinter.BOTH)
+    main_menu.pack(side=tkinter.LEFT)
+    app_view.pack(side=tkinter.LEFT)
+    app_view.load()
+    app_view.show()
     root.mainloop()
 
 if __name__ == '__main__':
