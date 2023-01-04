@@ -116,7 +116,8 @@ class TimeSheet(object):
     def get_holiday_rows(self):
         workday_array = self.df.workday.values
         holliday_array = 1 - workday_array
-        rows = numpy.argwhere(holliday_array)
+        # rows = numpy.argwhere(holliday_array)
+        rows = numpy.nonzero(holliday_array)
         return rows
 
 
