@@ -121,11 +121,12 @@ class TimeSheet(object):
         return rows
 
 
-    def check_balance(self, date, employment_rate, last_year_balance=datetime.timedelta(0)):
+    def check_balance(self, date, employment_rate, break_duration_mn, last_year_balance=datetime.timedelta(0)):
         balance = last_year_balance
         row_max = date.timetuple().tm_yday - 1
+        break_time = datetime.timedelta(minutes=break_duration_mn)
         for row in range(row_max):
-            worktime = self._get_day_worktime(row)
+            worktime = self._get_day_worktime(row, break_time)
             required_worktime = self._get_day_required_worktime(row, employment_rate)
             day_balance = worktime - required_worktime 
             balance += day_balance
@@ -166,14 +167,18 @@ class TimeSheet(object):
         return balance
 
 
-    def _get_day_worktime(self, row):
+    def _get_day_worktime(self, row, break_time):
         day = datetime.date.min # every day has the same hours, so it does not matter what day we take
         start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_start'])) # we have to create a datetime to use timedeltas
         end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_end']))
         morning_worktime = end_time - start_time
+        if morning_worktime > break_time:
+            morning_worktime = morning_worktime - break_time
         start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_start']))
         end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_end']))
         afternoon_worktime = end_time - start_time
+        if afternoon_worktime > break_time:
+            afternoon_worktime = afternoon_worktime - break_time
         day_worktime = morning_worktime + afternoon_worktime
         return day_worktime
 
