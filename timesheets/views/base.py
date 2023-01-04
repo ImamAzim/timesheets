@@ -134,7 +134,7 @@ class TimeSheetView(AppView):
         buttons['show'] = ttk.Button(parent, text='show', command=self.show)
         buttons['check balance'] = ttk.Button(parent, text='check balance', command=self.check_balance)
         buttons['today balance'] = ttk.Button(parent, text='today balance', command=self.show_today_balance)
-        frames['table'] = ttk.LabelFrame(self)
+        self._balance_display = ttk.Label(parent)
 
         for name, frame in frames.items():
             frame.pack(fill=tkinter.BOTH, expand=True)
@@ -147,6 +147,9 @@ class TimeSheetView(AppView):
         for button in buttons.values():
             button.grid(column=0, row=row, columnspan=2, sticky='ew')
             row += 1
+        self._balance_display.grid(column=0, row=row, columnspan=2, sticky='ew')
+        row += 1
+
 
         # self._pandasframe = frames['table']
         self._pandasframe = pandaframe
@@ -204,7 +207,18 @@ class TimeSheetView(AppView):
         if negative_balance:
             last_year_balance = - last_year_balance
         balance = self._timesheet.check_balance(date, employment_rate, last_year_balance)
-        self.print(balance)
+        self.update_balance_display(balance)
+
+    def update_balance_display(self, balance):
+        if balance < datetime.timedelta(0):
+            text = str(-balance)
+            color = 'red'
+        else:
+            text = str(balance)
+            color = 'green'
+        self._balance_display['text'] = text
+        self._balance_display['background'] = color
+        
 
     def show_today_balance(self):
         employment_rate = float(self._app_parameters_var['employment_rate'].get())
@@ -232,6 +246,7 @@ def manual_test():
     app_view.pack(side=tkinter.LEFT)
     app_view.load()
     app_view.show()
+    app_view.check_balance()
     root.mainloop()
 
 if __name__ == '__main__':
