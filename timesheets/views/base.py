@@ -131,6 +131,7 @@ class TimeSheetView(AppView):
         buttons['load'] = ttk.Button(parent, text='load', command=self.load)
         buttons['show'] = ttk.Button(parent, text='show', command=self.show)
         buttons['check balance'] = ttk.Button(parent, text='check balance', command=self.check_balance)
+        buttons['today worktime'] = ttk.Button(parent, text='today worktime', command=self.show_today_worktime)
 
         for name, frame in frames.items():
             frame.pack(fill=tkinter.BOTH, expand=True)
@@ -188,6 +189,10 @@ class TimeSheetView(AppView):
         date = datetime.date.today()
         balance = self._timesheet.check_balance(date, employement_rate)
         self.print(balance)
+
+    def show_today_worktime(self):
+        worktime = self._timesheet.get_today_worktime()
+        self.print(worktime)
 
     def _change_path(self):
         path = filedialog.askdirectory(title='timesheet folder', initialdir=self._timesheet.directory)

@@ -112,6 +112,11 @@ class TimeSheet(object):
         print(worktime)
         return balance
 
+    def get_today_worktime(self):
+        row = datetime.date.today().timetuple().tm_yday - 1
+        worktime = self._get_day_worktime(row)
+        return worktime
+
     def _get_day_worktime(self, row):
         day = datetime.date.min # every day has the same hours, so it does not matter what day we take
         start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_start'])) # we have to create a datetime to use timedeltas
