@@ -106,13 +106,22 @@ class TimeSheet(object):
 
     def check_balance(self, date, employment_rate):
         balance = 0
-        row = 2
-        worktime = self._get_day_required_worktime(row, employment_rate)
+        # worktime = self._get_day_required_worktime(row, employment_rate)
+        row = 1
+        worktime = self._get_day_worktime(row)
         print(worktime)
         return balance
 
     def _get_day_worktime(self, row):
-        pass
+        day = datetime.date.min # every day has the same hours, so it does not matter what day we take
+        start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_start'])) # we have to create a datetime to use timedeltas
+        end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_end']))
+        morning_worktime = end_time - start_time
+        start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_start']))
+        end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_end']))
+        afternoon_worktime = end_time - start_time
+        day_worktime = morning_worktime + afternoon_worktime
+        return day_worktime
 
     def _get_day_required_worktime(self, row, employment_rate):
         is_workday = self._df.at[row, 'workday']
