@@ -107,7 +107,7 @@ class TimeSheetView(AppView):
 
 
     def __init__(self, root, main_menu, name='timesheet'):
-        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employement_rate=1, path='')
+        super().__init__(root, main_menu, name, user_name=os.getlogin(), year=2023, employment_rate=1, path='')
 
 
         frames = dict()
@@ -117,7 +117,7 @@ class TimeSheetView(AppView):
 
         self.table = None
 
-        entry_names = ('user_name', 'year', 'employement_rate')
+        entry_names = ('user_name', 'year', 'employment_rate')
 
         frames['frame 1'] = ttk.LabelFrame(self)
         parent = frames['frame 1']
@@ -131,7 +131,7 @@ class TimeSheetView(AppView):
         buttons['load'] = ttk.Button(parent, text='load', command=self.load)
         buttons['show'] = ttk.Button(parent, text='show', command=self.show)
         buttons['check balance'] = ttk.Button(parent, text='check balance', command=self.check_balance)
-        buttons['today worktime'] = ttk.Button(parent, text='today worktime', command=self.show_today_worktime)
+        buttons['today balance'] = ttk.Button(parent, text='today balance', command=self.show_today_balance)
 
         for name, frame in frames.items():
             frame.pack(fill=tkinter.BOTH, expand=True)
@@ -185,14 +185,19 @@ class TimeSheetView(AppView):
         self.table = table
 
     def check_balance(self):
-        employement_rate = float(self._app_parameters_var['employement_rate'].get())
+        employment_rate = float(self._app_parameters_var['employment_rate'].get())
         date = datetime.date.today()
-        balance = self._timesheet.check_balance(date, employement_rate)
+        balance = self._timesheet.check_balance(date, employment_rate)
         self.print(balance)
 
     def show_today_worktime(self):
         worktime = self._timesheet.get_today_worktime()
         self.print(worktime)
+
+    def show_today_balance(self):
+        employment_rate = float(self._app_parameters_var['employment_rate'].get())
+        balance = self._timesheet.get_today_balance(employment_rate)
+        self.print(balance)
 
     def _change_path(self):
         path = filedialog.askdirectory(title='timesheet folder', initialdir=self._timesheet.directory)

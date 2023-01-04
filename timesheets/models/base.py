@@ -141,6 +141,14 @@ class TimeSheet(object):
 
         return day_worktime
 
+    def get_today_balance(self, employment_rate):
+        worktime = self.get_today_worktime()
+        row = datetime.date.today().timetuple().tm_yday - 1
+        required_worktime = self._get_day_required_worktime(row, employment_rate)
+        balance = worktime - required_worktime
+        return balance
+
+
     def _get_day_worktime(self, row):
         day = datetime.date.min # every day has the same hours, so it does not matter what day we take
         start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_start'])) # we have to create a datetime to use timedeltas
