@@ -29,6 +29,7 @@ def date_iter(year, month):
 class TimeSheet(object):
 
     """Docstring for TimeSheet. """
+    FULL_DAY_WORKTIME = datetime.timedelta(hours=8)
 
     def __init__(self):
         """TODO: to be defined.
@@ -103,9 +104,23 @@ class TimeSheet(object):
         self._df = pandas.read_csv(path)
         self._year = year
 
-    def check_balance(self, date, employement_rate):
+    def check_balance(self, date, employment_rate):
         balance = 0
+        row = 2
+        worktime = self._get_day_required_worktime(row, employment_rate)
+        print(worktime)
         return balance
+
+    def _get_day_worktime(self, row):
+        pass
+
+    def _get_day_required_worktime(self, row, employment_rate):
+        is_workday = self._df.at[row, 'workday']
+        if is_workday:
+            required_worktime = self.FULL_DAY_WORKTIME * employment_rate
+        else:
+            required_worktime = 0
+        return required_worktime
 
 
 
