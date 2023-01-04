@@ -93,7 +93,7 @@ class TimeSheet(object):
         if self._df is not None and self._year is not None:
             filename = f'{name}_{self._year}'
             path = os.path.join(self.directory, filename)
-            self._df.to_csv(path)
+            self._df.to_csv(path, index=False)
 
     def load(self, name, year):
         """load df from path
