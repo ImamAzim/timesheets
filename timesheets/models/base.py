@@ -132,7 +132,8 @@ class TimeSheet(object):
             balance += day_balance
         return balance
 
-    def get_today_worktime(self):
+    def get_today_worktime(self, break_duration_mn):
+        break_time = datetime.timedelta(minutes=break_duration_mn)
         now = datetime.datetime.now()
         day = datetime.date.today()
         row = datetime.date.today().timetuple().tm_yday - 1
@@ -145,6 +146,8 @@ class TimeSheet(object):
             morning_worktime = end_time - start_time
         else:
             morning_worktime = 0
+        if morning_worktime > break_time:
+            morning_worktime = morning_worktime - break_time
 
         start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_start']))
         end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_end']))
@@ -154,13 +157,15 @@ class TimeSheet(object):
             afternoon_worktime = end_time - start_time
         else:
             afternoon_worktime = 0
+        if afternoon_worktime > break_time:
+            afternoon_worktime = afternoon_worktime - break_time
 
         day_worktime = morning_worktime + afternoon_worktime
 
         return day_worktime
 
-    def get_today_balance(self, employment_rate):
-        worktime = self.get_today_worktime()
+    def get_today_balance(self, employment_rate, break_duration_mn):
+        worktime = self.get_today_worktime(break_duration_mn)
         row = datetime.date.today().timetuple().tm_yday - 1
         required_worktime = self._get_day_required_worktime(row, employment_rate)
         balance = worktime - required_worktime

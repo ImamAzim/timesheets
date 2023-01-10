@@ -231,8 +231,9 @@ class TimeSheetView(AppView):
         self._balance_display['background'] = color
 
     def show_today_balance(self):
+        break_duration_mn = int(self._app_parameters_var['break_duration_mn'].get())
         employment_rate = float(self._app_parameters_var['employment_rate'].get())
-        balance = self._timesheet.get_today_balance(employment_rate)
+        balance = self._timesheet.get_today_balance(employment_rate, break_duration_mn)
         if balance < datetime.timedelta(0):
             text = '-' + str(-balance)
         else:
