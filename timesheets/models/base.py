@@ -145,7 +145,7 @@ class TimeSheet(object):
                 end_time = now
             morning_worktime = end_time - start_time
         else:
-            morning_worktime = 0
+            morning_worktime = datetime.timedelta(0)
         if morning_worktime > break_time:
             morning_worktime = morning_worktime - break_time
 
@@ -156,7 +156,7 @@ class TimeSheet(object):
                 end_time = now
             afternoon_worktime = end_time - start_time
         else:
-            afternoon_worktime = 0
+            afternoon_worktime = datetime.timedelta(0)
         if afternoon_worktime > break_time:
             afternoon_worktime = afternoon_worktime - break_time
 
