@@ -200,25 +200,26 @@ class TimeSheetView(AppView):
             self.table = table
 
     def check_balance(self):
-        employment_rate = float(self._app_parameters_var['employment_rate'].get())
-        date = datetime.date.today()
+        df = self._timesheet.df
+        if df is not None:
+            employment_rate = float(self._app_parameters_var['employment_rate'].get())
+            date = datetime.date.today()
 
-        last_year_balance_str = self._app_parameters_var['last_year_balance'].get()
-        if last_year_balance_str[0] == '-':
-            last_year_balance_str = last_year_balance_str[1:]
-            negative_balance = True
-        else:
-            negative_balance = False
-        last_year_datetime = datetime.datetime.combine(datetime.date.min, datetime.time.fromisoformat(last_year_balance_str))
-        ref = datetime.datetime.min
-        last_year_balance = last_year_datetime - ref
-        if negative_balance:
-            last_year_balance = - last_year_balance
+            last_year_balance_str = self._app_parameters_var['last_year_balance'].get()
+            if last_year_balance_str[0] == '-':
+                last_year_balance_str = last_year_balance_str[1:]
+                negative_balance = True
+            else:
+                negative_balance = False
+            last_year_datetime = datetime.datetime.combine(datetime.date.min, datetime.time.fromisoformat(last_year_balance_str))
+            ref = datetime.datetime.min
+            last_year_balance = last_year_datetime - ref
+            if negative_balance:
+                last_year_balance = - last_year_balance
 
-        break_duration_mn = int(self._app_parameters_var['break_duration_mn'].get())
+            break_duration_mn = int(self._app_parameters_var['break_duration_mn'].get())
 
-        balance = self._timesheet.check_balance(date, employment_rate, break_duration_mn, last_year_balance)
-        if balance is not None:
+            balance = self._timesheet.check_balance(date, employment_rate, break_duration_mn, last_year_balance)
             self.update_balance_display(balance)
 
     def update_balance_display(self, balance):
