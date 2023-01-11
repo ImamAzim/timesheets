@@ -122,15 +122,16 @@ class TimeSheet(object):
 
 
     def check_balance(self, date, employment_rate, break_duration_mn, last_year_balance=datetime.timedelta(0)):
-        balance = last_year_balance
-        row_max = date.timetuple().tm_yday - 1
-        break_time = datetime.timedelta(minutes=break_duration_mn)
-        for row in range(row_max):
-            worktime = self._get_day_worktime(row, break_time)
-            required_worktime = self._get_day_required_worktime(row, employment_rate)
-            day_balance = worktime - required_worktime 
-            balance += day_balance
-        return balance
+        if self.df is not None:
+            balance = last_year_balance
+            row_max = date.timetuple().tm_yday - 1
+            break_time = datetime.timedelta(minutes=break_duration_mn)
+            for row in range(row_max):
+                worktime = self._get_day_worktime(row, break_time)
+                required_worktime = self._get_day_required_worktime(row, employment_rate)
+                day_balance = worktime - required_worktime
+                balance += day_balance
+            return balance
 
     def get_today_worktime(self, break_duration_mn):
         break_time = datetime.timedelta(minutes=break_duration_mn)
