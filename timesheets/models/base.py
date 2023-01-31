@@ -121,18 +121,19 @@ class TimeSheet(object):
         break_time = datetime.timedelta(minutes=break_duration_mn)
 
         total_balance = last_year_balance
+        print(total_balance)
         for row in self._df.index:
             try:
                 worktime = self._get_day_worktime(row, break_time)
             except ValueError:
                 worktime = datetime.timedelta()
                 print(f'value error on row {row}please check')
-            self._df.at[row, 'worktime'] = round(worktime.seconds / 3600, 2)
+            self._df.at[row, 'worktime'] = round(worktime.total_seconds() / 3600, 2)
             required_worktime = self._get_day_required_worktime(row, employment_rate)
             day_balance = worktime - required_worktime
-            self._df.at[row, 'day_balance'] = round(day_balance.seconds / 3600, 2)
+            self._df.at[row, 'balance'] = round(day_balance.total_seconds() / 3600, 2)
             total_balance += day_balance
-            self._df.at[row, 'tot_balance'] = round(total_balance.seconds / 3600, 2)
+            self._df.at[row, 'tot_bal'] = round(total_balance.total_seconds() / 3600, 2)
 
         self._year = year
 

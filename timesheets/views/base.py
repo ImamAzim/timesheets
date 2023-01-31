@@ -183,16 +183,11 @@ class TimeSheetView(AppView):
         employment_rate = float(self._app_parameters_var['employment_rate'].get())
 
         last_year_balance_str = self._app_parameters_var['last_year_balance'].get()
-        if last_year_balance_str[0] == '-':
-            last_year_balance_str = last_year_balance_str[1:]
-            negative_balance = True
-        else:
-            negative_balance = False
-        last_year_datetime = datetime.datetime.combine(datetime.date.min, datetime.time.fromisoformat(last_year_balance_str))
-        ref = datetime.datetime.min
-        last_year_balance = last_year_datetime - ref
-        if negative_balance:
-            last_year_balance = - last_year_balance
+        try:
+            last_year_balance = datetime.timedelta(hours=float(last_year_balance_str))
+        except ValueError:
+            last_year_balance = datetime.timedelta()
+            print('value error on last year balance!')
 
         self._timesheet.load(name, year, break_duration_mn, employment_rate, last_year_balance)
 
@@ -219,16 +214,11 @@ class TimeSheetView(AppView):
         date = datetime.date.today()
 
         last_year_balance_str = self._app_parameters_var['last_year_balance'].get()
-        if last_year_balance_str[0] == '-':
-            last_year_balance_str = last_year_balance_str[1:]
-            negative_balance = True
-        else:
-            negative_balance = False
-        last_year_datetime = datetime.datetime.combine(datetime.date.min, datetime.time.fromisoformat(last_year_balance_str))
-        ref = datetime.datetime.min
-        last_year_balance = last_year_datetime - ref
-        if negative_balance:
-            last_year_balance = - last_year_balance
+        try:
+            last_year_balance = datetime.timedelta(hours=float(last_year_balance_str))
+        except ValueError:
+            last_year_balance = datetime.timedelta()
+            print('value error on last year balance!')
 
         break_duration_mn = int(self._app_parameters_var['break_duration_mn'].get())
 
