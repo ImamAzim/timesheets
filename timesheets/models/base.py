@@ -111,18 +111,18 @@ class TimeSheet(object):
             self._df = pandas.read_csv(path)
         except FileNotFoundError:
             print('no file found')
-        if 'worktime' not in self._df:
-            self._df['worktime'] = '00:00'
-        if 'balance' not in self._df:
-            self._df['balance'] = '00:00'
-        if 'tot_bal' not in self._df:
-            self._df['tot_bal'] = '00:00'
+        # if 'worktime' not in self._df:
+        self._df['worktime'] = '0.0'
+        # if 'balance' not in self._df:
+        self._df['balance'] = '0.0'
+        # if 'tot_bal' not in self._df:
+        self._df['tot_bal'] = '0.0'
 
         break_time = datetime.timedelta(minutes=break_duration_mn)
 
         total_balance = last_year_balance
-        print(total_balance)
-        for row in self._df.index:
+        row_max = datetime.date.today().timetuple().tm_yday - 1
+        for row in range(row_max):
             try:
                 worktime = self._get_day_worktime(row, break_time)
             except ValueError:
