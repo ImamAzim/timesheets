@@ -100,7 +100,7 @@ class TimeSheet(object):
             path = os.path.join(self.directory, filename)
             self._df.to_csv(path, index=False)
 
-    def load(self, name, year, break_duration_mn):
+    def load(self, name, year, break_duration_mn, employment_rate):
         """load df from path
 
         """
@@ -123,9 +123,10 @@ class TimeSheet(object):
             except ValueError:
                 worktime = datetime.timedelta()
                 print(f'value error on row {row}please check')
-            self._df['worktime'][row] = round(worktime.seconds / 3600, 2)
+            self._df.at[row, 'worktime'] = round(worktime.seconds / 3600, 2)
             # required_worktime = self._get_day_required_worktime(row, employment_rate)
-            # day_balance = worktime - required_worktime 
+            # day_balance = worktime - required_worktime
+            # self._df['day_balance'] = round(day_balance.seconds / 3600, 2)
             # balance += day_balance
 
         self._year = year
