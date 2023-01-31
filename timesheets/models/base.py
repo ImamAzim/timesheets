@@ -116,11 +116,14 @@ class TimeSheet(object):
             self._df['day_balance'] = '00:00'
 
         break_time = datetime.timedelta(minutes=break_duration_mn)
-        worktimes = self._get_all_worktimes(break_time)
-        print(worktimes)
 
-        # for row in range(row_max):
-            # worktime = self._get_day_worktime(row, break_time)
+        for row in self._df.index:
+            try:
+                worktime = self._get_day_worktime(row, break_time)
+            except ValueError:
+                worktime = datetime.timedelta()
+                print(f'value error on row {row}please check')
+            self._df['worktime'][row] = round(worktime.seconds / 3600, 2)
             # required_worktime = self._get_day_required_worktime(row, employment_rate)
             # day_balance = worktime - required_worktime 
             # balance += day_balance
@@ -207,6 +210,22 @@ class TimeSheet(object):
 
     def _get_all_worktimes(self, break_time):
         worktimes = None
+
+        day = datetime.date.min # every day has the same hours, so it does not matter what day we take
+        # starttimes = datetime.datetime.fromisoformat(self._df['AM_start'])
+        # print(starttimes)
+        # start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df['AM_start'])) # we have to create a datetime to use timedeltas
+        # end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'AM_end']))
+        # morning_worktime = end_time - start_time
+        # if morning_worktime > break_time:
+            # morning_worktime = morning_worktime - break_time
+        # start_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_start']))
+        # end_time = datetime.datetime.combine(day, datetime.time.fromisoformat(self._df.at[row, 'PM_end']))
+        # afternoon_worktime = end_time - start_time
+        # if afternoon_worktime > break_time:
+            # afternoon_worktime = afternoon_worktime - break_time
+        # day_worktime = morning_worktime + afternoon_worktime
+
         return worktimes
 
 
