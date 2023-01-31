@@ -110,6 +110,10 @@ class TimeSheet(object):
             self._df = pandas.read_csv(path)
         except FileNotFoundError:
             print('no file found')
+        if 'worktime' not in self._df:
+            self._df['worktime'] = '00:00'
+        if 'day_balance' not in self._df:
+            self._df['day_balance'] = '00:00'
         self._year = year
 
     def get_today_row(self):
