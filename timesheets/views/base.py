@@ -179,7 +179,8 @@ class TimeSheetView(AppView):
     def load(self):
         name = self._app_parameters_var['user_name'].get()
         year = int(self._app_parameters_var['year'].get())
-        self._timesheet.load(name, year)
+        break_duration_mn = int(self._app_parameters_var['break_duration_mn'].get())
+        self._timesheet.load(name, year, break_duration_mn)
 
     def show(self):
         df = self._timesheet.df

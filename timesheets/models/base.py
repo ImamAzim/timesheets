@@ -100,7 +100,7 @@ class TimeSheet(object):
             path = os.path.join(self.directory, filename)
             self._df.to_csv(path, index=False)
 
-    def load(self, name, year):
+    def load(self, name, year, break_duration_mn):
         """load df from path
 
         """
@@ -114,6 +114,17 @@ class TimeSheet(object):
             self._df['worktime'] = '00:00'
         if 'day_balance' not in self._df:
             self._df['day_balance'] = '00:00'
+
+        break_time = datetime.timedelta(minutes=break_duration_mn)
+        worktimes = self._get_all_worktimes(break_time)
+        print(worktimes)
+
+        # for row in range(row_max):
+            # worktime = self._get_day_worktime(row, break_time)
+            # required_worktime = self._get_day_required_worktime(row, employment_rate)
+            # day_balance = worktime - required_worktime 
+            # balance += day_balance
+
         self._year = year
 
     def get_today_row(self):
@@ -193,6 +204,11 @@ class TimeSheet(object):
             afternoon_worktime = afternoon_worktime - break_time
         day_worktime = morning_worktime + afternoon_worktime
         return day_worktime
+
+    def _get_all_worktimes(self, break_time):
+        worktimes = None
+        return worktimes
+
 
     def _get_day_required_worktime(self, row, employment_rate):
         is_workday = self._df.at[row, 'workday']
