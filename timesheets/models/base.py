@@ -65,7 +65,7 @@ class TimeSheet(object):
 
         """
         self._year = year
-        data = dict(month=[], day=[], weekday=[], AM_start=[], AM_end=[], PM_start=[], PM_end=[],workday=[])
+        data = dict(month=[], day=[], weekday=[], AM_start=[], AM_end=[], PM_start=[], PM_end=[],workday=[], worktime=[], day_balance=[])
 
         for month in range(1, 13):
             for date in date_iter(year, month):
@@ -82,6 +82,9 @@ class TimeSheet(object):
                 else:
                     workday = True
                 data['workday'].append(workday)
+                delta = str(datetime.timedelta())
+                data['worktime'].append(delta)
+                data['day_balance'].append(delta)
 
         df = pandas.DataFrame(data)
 
