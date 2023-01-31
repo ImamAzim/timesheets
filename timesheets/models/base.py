@@ -65,7 +65,7 @@ class TimeSheet(object):
 
         """
         self._year = year
-        data = dict(month=[], day=[], weekday=[], AM_start=[], AM_end=[], PM_start=[], PM_end=[],workday=[], worktime=[], day_balance=[])
+        data = dict(month=[], day=[], weekday=[], AM_start=[], AM_end=[], PM_start=[], PM_end=[],workday=[], worktime=[], balance=[], tot_bal=[])
 
         for month in range(1, 13):
             for date in date_iter(year, month):
@@ -84,7 +84,8 @@ class TimeSheet(object):
                 data['workday'].append(workday)
                 delta = str(datetime.timedelta())
                 data['worktime'].append(delta)
-                data['day_balance'].append(delta)
+                data['balance'].append(delta)
+                data['tot_bal'].append(delta)
 
         df = pandas.DataFrame(data)
 
@@ -100,7 +101,7 @@ class TimeSheet(object):
             path = os.path.join(self.directory, filename)
             self._df.to_csv(path, index=False)
 
-    def load(self, name, year, break_duration_mn, employment_rate):
+    def load(self, name, year, break_duration_mn, employment_rate, last_year_balance):
         """load df from path
 
         """
@@ -112,11 +113,14 @@ class TimeSheet(object):
             print('no file found')
         if 'worktime' not in self._df:
             self._df['worktime'] = '00:00'
-        if 'day_balance' not in self._df:
-            self._df['day_balance'] = '00:00'
+        if 'balance' not in self._df:
+            self._df['balance'] = '00:00'
+        if 'tot_bal' not in self._df:
+            self._df['tot_bal'] = '00:00'
 
         break_time = datetime.timedelta(minutes=break_duration_mn)
 
+        total_balance = last_year_balance
         for row in self._df.index:
             try:
                 worktime = self._get_day_worktime(row, break_time)
@@ -124,10 +128,11 @@ class TimeSheet(object):
                 worktime = datetime.timedelta()
                 print(f'value error on row {row}please check')
             self._df.at[row, 'worktime'] = round(worktime.seconds / 3600, 2)
-            # required_worktime = self._get_day_required_worktime(row, employment_rate)
-            # day_balance = worktime - required_worktime
-            # self._df['day_balance'] = round(day_balance.seconds / 3600, 2)
-            # balance += day_balance
+            required_worktime = self._get_day_required_worktime(row, employment_rate)
+            day_balance = worktime - required_worktime
+            self._df.at[row, 'day_balance'] = round(day_balance.seconds / 3600, 2)
+            total_balance += day_balance
+            self._df.at[row, 'tot_balance'] = round(total_balance.seconds / 3600, 2)
 
         self._year = year
 
