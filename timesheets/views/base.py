@@ -193,25 +193,27 @@ class TimeSheetView(AppView):
 
     def show(self):
         df = self._timesheet.df
-        # window = tkinter.Toplevel()
-        window = self._pandasframe
-        table = pandastable.Table(window, dataframe=df)
-        table.show()
-        table.redraw()
-        row = self._timesheet.get_today_row()
-        table.movetoSelection(row=row)
-        holiday_rows = self._timesheet.get_holiday_rows()
-        table.setRowColors(rows=holiday_rows, clr='gray', cols='all')
-        table.redraw()
-        table.autoResizeColumns()
-        x = max(743, sum(list(table.columnwidths.values())) + 100)
-        y= 700
-        self._root.geometry(f'{x}x{y}')
-        self.table = table
+        if df is not None:
+            window = self._pandasframe
+            table = pandastable.Table(window, dataframe=df)
+            table.show()
+            table.redraw()
+            row = self._timesheet.get_today_row()
+            table.movetoSelection(row=row)
+            holiday_rows = self._timesheet.get_holiday_rows()
+            table.setRowColors(rows=holiday_rows, clr='gray', cols='all')
+            table.redraw()
+            table.autoResizeColumns()
+            x = max(743, sum(list(table.columnwidths.values())) + 100)
+            y= 700
+            self._root.geometry(f'{x}x{y}')
+            self.table = table
 
     def check_balance(self):
-        employment_rate = float(self._app_parameters_var['employment_rate'].get())
-        date = datetime.date.today()
+        df = self._timesheet.df
+        if df is not None:
+            employment_rate = float(self._app_parameters_var['employment_rate'].get())
+            date = datetime.date.today()
 
         last_year_balance_str = self._app_parameters_var['last_year_balance'].get()
         try:
@@ -220,10 +222,10 @@ class TimeSheetView(AppView):
             last_year_balance = datetime.timedelta()
             print('value error on last year balance!')
 
-        break_duration_mn = int(self._app_parameters_var['break_duration_mn'].get())
+            break_duration_mn = int(self._app_parameters_var['break_duration_mn'].get())
 
-        balance = self._timesheet.check_balance(date, employment_rate, break_duration_mn, last_year_balance)
-        self.update_balance_display(balance)
+            balance = self._timesheet.check_balance(date, employment_rate, break_duration_mn, last_year_balance)
+            self.update_balance_display(balance)
 
     def update_balance_display(self, balance):
         if balance < datetime.timedelta(0):
